@@ -1,0 +1,67 @@
+.workspace-wrapper {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  background-color: var(--background);
+}
+
+.workspace-main-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  height: 100%;
+  background-color: var(--surface);
+  position: relative; 
+}
+
+.view-tabs {
+  display: flex;
+  background-color: var(--background);
+  padding: 0.5rem 1rem;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 10;
+}
+
+.tab-button {
+  padding: 0.5rem 1.25rem;
+  border: 1px solid transparent;
+  background-color: transparent;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.tab-button:hover {
+  color: var(--text-main);
+  background-color: var(--border);
+}
+
+.tab-button.active {
+  color: var(--primary);
+  background-color: rgba(122, 162, 247, 0.1);
+  border-color: var(--primary);
+}
+
+.view-content {
+  position: absolute;
+  top: 49px; 
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+}
+
+.view-content .sp-wrapper,
+.view-content .sp-stack,
+.view-content .sp-preview-container,
+.view-content .sp-preview-iframe {
+    height: 100% !important;
+    width: 100% !important;
+}

@@ -1,0 +1,5 @@
+iframe {
+  border: 1px solid black;
+  width: 100%; /* takes precedence over the width set with the HTML width attribute */
+  min-height: 500px;
+}

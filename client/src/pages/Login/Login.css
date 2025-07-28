@@ -1,0 +1,246 @@
+/* .login-container{
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.form-container{
+    box-shadow: 4px 4px 10px gray;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 300px;
+    border-radius: 8px;
+    padding: 20px;
+    gap: 8px;
+}
+.form-container span{
+    color: red;
+}
+
+.form-container input{
+    padding: 12px;
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.form-container button{
+    margin-top: 8px;
+    padding: 10px;
+    background-color: black;
+    color: white;
+    border-radius: 10px;
+    font-size: large;
+    cursor: pointer;
+    width: 50%;
+} */
+
+
+/*
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #1c1c1c;
+}
+
+.auth-form {
+    background: #2d2d2d;
+    padding: 2.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.auth-form h1 {
+    color: #fff;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.auth-form input {
+    padding: 0.8rem 1rem;
+    border-radius: 6px;
+    border: 1px solid #444;
+    background: #333;
+    color: #fff;
+    font-size: 1rem;
+}
+
+.auth-form button {
+    padding: 0.8rem;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+.auth-form button:hover {
+    background-color: #0056b3;
+}
+
+.auth-form button:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+}
+
+.error-message {
+    color: #ff4d4d;
+    background: rgba(255, 77, 77, 0.1);
+    padding: 0.5rem;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.form-switch {
+    color: #aaa;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.form-switch a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.form-switch a:hover {
+    text-decoration: underline;
+}
+
+*/
+
+.auth-container {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: 2rem;
+  background-color: var(--background);
+}
+
+/* The form card itself */
+.auth-form {
+  background-color: var(--surface);
+  padding: 2.5rem 3rem;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Form title */
+.auth-form h1 {
+  color: var(--text-main);
+  text-align: center;
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 600;
+}
+
+/* Input fields */
+.auth-form input {
+  padding: 0.9rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--background);
+  color: var(--text-main);
+  font-size: 1rem;
+  width: 100%;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.auth-form input::placeholder {
+  color: var(--text-muted);
+}
+
+.auth-form input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(122, 162, 247, 0.3);
+}
+
+.auth-form input:disabled {
+    background-color: #2a2c3d;
+    cursor: not-allowed;
+}
+
+/* Submit button */
+.auth-form button {
+  padding: 0.9rem;
+  border: none;
+  background-color: var(--primary);
+  color: #16161e;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.auth-form button:hover:not(:disabled) {
+  background-color: #9aa5ce;
+  transform: translateY(-1px);
+}
+
+.auth-form button:disabled {
+  background-color: var(--border);
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+
+/* Error message styling */
+.error-message {
+  color: #f7768e;
+  background: rgba(247, 118, 142, 0.1);
+  border: 1px solid rgba(247, 118, 142, 0.3);
+  padding: 0.75rem;
+  border-radius: 6px;
+  text-align: center;
+  font-size: 0.9rem;
+  margin: -0.5rem 0;
+}
+
+/* Link to switch between Login/Register */
+.form-switch {
+  color: var(--text-muted);
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.form-switch a {
+  color: var(--primary);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.form-switch a:hover {
+  text-decoration: underline;
+}

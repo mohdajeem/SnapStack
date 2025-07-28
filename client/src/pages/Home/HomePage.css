@@ -1,0 +1,206 @@
+/* --- Import Fonts --- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+/* --- Global Styles & Variables --- */
+:root {
+  --background-color: #111827;
+  --primary-text-color: #F3F4F6;
+  --secondary-text-color: #D1D5DB;
+  --accent-gradient: linear-gradient(to right, #14B8A6, #007BFF);
+  --card-background: #1F2937;
+  --border-color: #374151;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: var(--background-color);
+  color: var(--primary-text-color);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* --- Section Base Styling --- */
+section {
+  padding: 80px 20px;
+  text-align: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+h2 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+}
+
+p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: var(--secondary-text-color);
+  max-width: 700px;
+  margin: 0 auto 20px auto;
+}
+
+/* --- Hero Section --- */
+.hero {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-headline {
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.hero-subheading {
+  font-size: 1.25rem;
+  margin-bottom: 40px;
+}
+
+/* --- Call to Action Button --- */
+.home-cta-button {
+  background: var(--accent-gradient);
+  color: white;
+  border: none;
+  padding: 16px 32px;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
+}
+
+.home-cta-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 123, 255, 0.3);
+}
+
+/* --- "How It Works" Section --- */
+.steps-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  margin-top: 50px;
+  text-align: left;
+}
+
+.step-card {
+  background-color: var(--card-background);
+  padding: 30px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  transition: transform 0.2s ease;
+}
+
+.step-card:hover {
+    transform: translateY(-5px);
+}
+
+.step-icon {
+  font-size: 2.5rem;
+  margin-bottom: 15px;
+}
+
+.step-card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.step-card p {
+  font-size: 1rem;
+}
+
+
+/* --- Visual Showcase Section --- */
+.showcase-subheading {
+  margin-bottom: 40px;
+}
+
+.app-mockup {
+  width: 100%;
+  max-width: 900px;
+  height: 500px;
+  margin: 0 auto;
+  border-radius: 12px;
+  background-color: #0d1117; /* GitHub dark background */
+  border: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.app-mockup p {
+  color: #888;
+  font-size: 1.2rem;
+}
+
+.slider {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  gap: 20px;
+  padding: 10px;
+}
+
+.slider img {
+  height: 100%;
+  width: auto;
+  border-radius: 12px;
+  flex: 0 0 auto;
+  scroll-snap-align: center;
+  object-fit: contain;
+}
+
+
+/* --- Final CTA Section --- */
+.final-cta {
+  background-color: var(--card-background);
+  border-radius: 20px;
+  margin-top: 60px;
+}
+
+.final-cta h2 {
+  margin-bottom: 15px;
+}
+
+.final-cta p {
+  margin-bottom: 30px;
+}
+
+/* --- Footer --- */
+.footer {
+  text-align: center;
+  padding: 20px;
+  margin-top: 60px;
+  border-top: 1px solid var(--border-color);
+}
+
+.footer p {
+  font-size: 0.9rem;
+  color: var(--secondary-text-color);
+}
+
+
+/* --- Responsive Design --- */
+@media (max-width: 768px) {
+  h2 {
+    font-size: 2rem;
+  }
+  
+  .hero-headline {
+    font-size: 2.5rem;
+  }
+  
+  .steps-container {
+    grid-template-columns: 1fr;
+  }
+
+  .app-mockup {
+    height: 300px;
+  }
+}

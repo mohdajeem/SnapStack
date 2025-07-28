@@ -1,0 +1,86 @@
+:root {
+  --font-sans: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  
+  /* Dark Theme Colors */
+  --background: #1a1b26; /* A deep, dark blue */
+  --surface: #24283b;   /* A slightly lighter shade for cards/modals */
+  --primary: #7aa2f7;   /* A vibrant blue for accents and links */
+  --text-main: #c0caf5; /* A soft, readable light text */
+  --text-muted: #a9b1d6;  /* A dimmer text for secondary info */
+  --border: #414868;
+
+  font-family: var(--font-sans);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+/* html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+} */
+
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  height: auto;
+  min-height: 100vh;
+  overflow-x: hidden;
+  font-family: sans-serif;
+}
+
+
+/* Apply a global reset and base styles */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--text-main);
+  line-height: 1.6;
+}
+
+/* Ensure the app can grow beyond the viewport height if needed */
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Basic styles for interactive elements */
+a {
+  font-weight: 500;
+  color: var(--primary);
+  text-decoration: inherit;
+  transition: color 0.2s ease-in-out;
+}
+a:hover {
+  color: #9eceff; /* A lighter shade for hover */
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: var(--primary);
+  color: var(--background);
+  cursor: pointer;
+  transition: border-color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+}
+button:hover {
+  background-color: #9eceff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
