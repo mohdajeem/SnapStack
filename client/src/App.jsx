@@ -7,7 +7,7 @@ import MainLayout from "./component/MainLayout.jsx";
 import Login from './pages/Login/Login.jsx';
 import Register from './pages/Register/Register.jsx';
 import Dashboard from "./pages/Dashboard/Dashboard.jsx";
-import NewWorkspace from "./component/Workspace/NewWorkSpace.jsx";
+import NewWorkspace from "./component/Workspace/NewWorkspace.jsx";
 import ExistingWorkspace from "./component/Workspace/ExistingWorkspace.jsx";
 import NotFound from "./pages/NotFound.jsx";
 import HomePage from './pages/Home/HomePage.jsx';
