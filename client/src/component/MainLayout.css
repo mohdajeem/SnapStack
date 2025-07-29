@@ -1,20 +1,14 @@
-/*
- * src/component/MainLayout.css
- * Styles for the main application layout after a user logs in.
- */
-
 .main-layout {
-  display: grid; /* Use CSS Grid for robust layout */
-  grid-template-rows: auto 1fr; /* First row for navbar (auto height), second for content (takes all remaining space) */
+  display: grid; 
+  grid-template-rows: auto 1fr;
   height: 100vh;
   background-color: var(--background);
 }
 
 .main-content {
-  overflow: auto; /* Allow scrolling on the content area itself */
+  overflow: auto; 
 }
 
-/* Add a subtle scrollbar that matches the theme */
 .main-content::-webkit-scrollbar {
   width: 8px;
 }

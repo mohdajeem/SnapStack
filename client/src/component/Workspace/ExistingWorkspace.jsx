@@ -63,7 +63,7 @@ const ExistingWorkspace = () => {
     try {
       const payload = { jsxCode: latestJsx.current, cssCode: latestCss.current };
       const resp = await updateSessionCode(sessionId, payload);
-      console.log(resp);
+      // console.log(resp);
     } catch (err) {
       console.error("Save failed", err);
     }
