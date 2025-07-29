@@ -51,14 +51,14 @@ const HomePage = () => {
             </p>
           </div>
           <div className="step-card">
-            <div className="step-icon">🤖</div>
+            <div className="step-icon">🌀</div>
             <h3>Generate & Preview</h3>
             <p>
               Our AI instantly writes the JSX/TSX and CSS, rendering a live, interactive preview right in your browser. No setup required.
             </p>
           </div>
           <div className="step-card">
-            <div className="step-icon">🚀</div>
+            <div className="step-icon">🔥</div>
             <h3>Refine & Export</h3>
             <p>
               Tweak your component with follow-up prompts or our visual editor. When you're happy, copy the code or download a .zip file to drop into your project.
