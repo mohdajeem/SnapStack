@@ -14,7 +14,7 @@ const app = express();
 
 // --- Middleware ---
 app.use(cors({
-    origin: process.env.VITE_FRONTEND_URL || 'http://localhost:5173',
+    origin: ['http://localhost:5173', 'https://snap-stack-pw13.vercel.app'],
     credentials: true
 }));
 
