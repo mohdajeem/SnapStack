@@ -1,0 +1,39 @@
+service: snapstack-backend
+frameworkVersion: '4'
+
+provider:
+  name: aws
+  runtime: nodejs20.x         # or nodejs18.x if you choose
+  region: us-east-1
+  stage: dev
+  timeout: 30
+  environment:
+    NODE_ENV: lambda
+  httpApi:
+    cors:
+      allowedOrigins:
+        - http://localhost:5173
+        - https://snap-stack-pw13.vercel.app
+      allowedHeaders:
+        - Content-Type
+        - Authorization
+        - X-Requested-With
+        - Access-Control-Allow-Origin
+      allowedMethods:
+        - OPTIONS
+        - GET
+        - POST
+        - PUT
+        - DELETE
+      allowCredentials: true
+
+functions:
+  api:
+    handler: server.handler
+    events:
+      - httpApi:
+          path: /
+          method: any
+      - httpApi:
+          path: /{proxy+}
+          method: any

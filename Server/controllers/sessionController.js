@@ -6,9 +6,9 @@ import User from "../models/User.js";
 const createOrUpdateSession = async(req, res) => {
     const {userPrompt, sessionId} = req.body;
     const userId = req.user._id;
-    console.log("userPrompt: ",userPrompt);
-    console.log("sessionId: ",sessionId);
-    console.log("Create Or Update Session called");
+    // console.log("userPrompt: ",userPrompt);
+    // console.log("sessionId: ",sessionId);
+    // console.log("Create Or Update Session called");
     if(!userPrompt) return res.status(400).json({success: false, message: "User prompt is required"});
     try{
         let session;
@@ -21,7 +21,7 @@ const createOrUpdateSession = async(req, res) => {
             }
             generatedCode = await refineComponentByGemini({
                 userPrompt,
-                currentCss: session.jsxCode,
+                currentJsx: session.jsxCode,
                 currentCss: session.cssCode
             });
 
@@ -92,11 +92,11 @@ const getSessionById = async (req, res) => {
 }
 
 const editSessionCode = async (req, res) => {
-    const {sessionId} = req.params;
+    const { id: sessionId } = req.params;
     const {jsxCode, cssCode} = req.body;
     try{
         // console.log("edit session called");
-        const session = await Session.findOne({_id: req.params.id, user: req.user._id});
+        const session = await Session.findOne({_id: sessionId, user: req.user._id});
 
         if(!session){
             return res.status(404).json({success: false, message: "Session not found or you do not have permission"});

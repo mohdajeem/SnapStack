@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # SnapStack – AI-Powered Component & Page Generator
 ### Live Demo: snap-stack-pw13.vercel.app
 ### GitHub Repo: github.com/mohdajeem/SnapStack
@@ -7,80 +8,263 @@
 
 ## Chat with an AI model to generate React components and pages (JSX + CSS)
 
-## Preview code output live in a secure iframe
+ # SnapStack — AI-Powered Component Generator
 
-## Resume previous sessions with full code and chat history
+ SnapStack converts plain-language UI requests into working, self-contained React components (JSX + CSS) with a live sandboxed preview and persistent user sessions.
 
-## Export generated code as a ZIP or copy it directly
+ Live demo: `https://snap-stack-pw13.vercel.app/`  
+ Repository: `https://github.com/mohdajeem/SnapStack`
 
-# Architecture
-<img src="https://github.com/user-attachments/assets/e8d4d7d9-7629-4a00-9d4d-cbf168a3ae79" width="100%" alt="SnapStack Architecture Diagram" />
-A high-level overview showing the integration of the frontend, backend, AI model APIs, and persistent storage.
+ ---
 
-## State Management & Persistence
-## Authentication & Sessions
-##### JWT-based auth for secure session handling
+ ## Overview
 
-Tokens stored in localStorage
+ Developers often spend time writing repetitive UI boilerplate. SnapStack lets users describe the component they need and returns a complete React component named `App` along with CSS. Generated components can be previewed, edited, refined with follow-up prompts, and persisted as sessions.
 
-API routes protected via middleware
+ ## Problem Statement
 
-## Local & Global State
-useState, useEffect, and REST API calls to sync frontend and backend
+ Creating UI components and iterating on them is time-consuming. There is a need for faster prototyping and iteration that reduces boilerplate while keeping code editable and exportable.
 
-Code editor, preview, and chat states persist on every AI interaction
+ ## Solution
 
-Sessions saved in MongoDB for full recovery
+ SnapStack provides:
 
-## Session Persistence
-Sessions fetched via GET /sessions upon login
+ - Natural-language → React component generation using an AI model adapter (Gemini adapter present in `Server/controllers/GeminiController.js`).
+ - Follow-up refinement of generated components (same endpoint, passing `sessionId`).
+ - Persisted sessions (chat history, JSX, CSS) in MongoDB.
+ - Live editable preview using Sandpack (`@codesandbox/sandpack-react`).
 
-Restores entire session context: chat, JSX, CSS, preview
+ ## Tech Stack (from package manifests)
 
-Loaded directly into the dashboard and editors
+ - Frontend: React (`react` ^18.3.1), Vite (`vite` ^7.0.4), `@codesandbox/sandpack-react` for sandboxed previews.
+ - Backend: Node.js + Express (`express` ^5.1.0), `serverless-http` for Lambda compatibility.
+ - Database: MongoDB (via `mongoose` ^8.16.4).
+ - Auth & Security: JWT (`jsonwebtoken` ^9.0.2), password hashing `bcryptjs`.
+ - External AI integration: `axios` calls to `GEMINI_API_URL` using `GEMINI_API_KEY`.
 
-## Key Decisions & Trade-Offs
-Area	Decision	Trade-off
- Auth	JWT + REST	Simple to implement; lacks social login flexibility
- AI Integration	OpenRouter (GPT-4o, LLaMA3)	Avoids OpenAI quota issues; limits fine-tuning
- Sandboxing	Embedded sandboxed <iframe>	Prevents eval/injection risks; slightly slower
- Persistence	Auto-save on every interaction	May cause excessive writes (future: debounce)
- Redis	Not yet implemented	Acceptable performance for now; can be added
+ See `client/package.json` and `Server/package.json` for full dependency lists.
 
-## Features
- JWT-based login/signup with secure token flow
+ ## Key Features
 
- AI chat interface to generate components & pages
+ - Register / Login (JWT) — secure token-based authentication (`Server/controllers/userController.js`).
+ - Generate and refine components — `POST /api/v1/sessions` (see `Server/controllers/sessionController.js`).
+ - Persistent sessions — `Session` model stores `title`, `jsxCode`, `cssCode`, and `chatHistory` (`Server/models/Session.js`).
+ - Live preview and code editing — `client/src/component/CodePreview/CodePreview.jsx` uses Sandpack.
+ - Client-side auth context — `client/src/context/AuthContext.jsx` stores token + user and auto-verifies on load.
 
- Live code preview inside sandboxed iframe
+ ## System Architecture (text + diagram)
 
- Syntax-highlighted JSX/CSS editors
+ High level:
 
- Export as ZIP or copy to clipboard
+ - Browser (React SPA) ↔ Express API (`/api/v1`) ↔ MongoDB
+ - Backend calls external AI (Gemini) to generate/refine components.
 
- Full session history & code persistence (MongoDB)
+ Mermaid snippet (also in `architecture.mmd`):
 
-## Tech Stack
-Layer	Stack
-Frontend	ReactJs
-Backend	Node.js + Express (Railway)
-Database	MongoDB Atlas
-AI Model	GPT-4o / LLaMA3 via OpenRouter
-Hosting	Vercel (Frontend), Railway (API)
+ ```mermaid
+ flowchart TB
+   subgraph FE["Frontend - React (Vite)"]
+     Browser["Browser / User"]
+     Frontend["React SPA (Vite)"]
+     Editor["Code Editor & Preview (Sandpack)"]
+     Browser --> Frontend
+     Frontend --> Editor
+   end
+
+   subgraph API["API / Serverless Entry"]
+     APIGW["API Gateway / HTTP Endpoint"]
+     APIGW --> Server["Express (serverless-http): server.js / app.js"]
+   end
+
+   subgraph BE["Backend - Express Controllers & Services"]
+     Routes["Routes: /api/v1/auth, /api/v1/sessions"]
+     Auth["authMiddleware (JWT)"]
+     Controllers["userController, sessionController, GeminiController"]
+     Models["Mongoose Models: User, Session"]
+     Controllers --> Models
+     Controllers -->|calls| Gemini["External AI (Gemini)"]
+   end
+
+   Frontend --> APIGW
+   APIGW --> Routes
+   Models -->|persist/read| MongoDB["MongoDB Atlas or local"]
+ ```
+
+ ## Data Flow (request → auth → DB → response)
+
+ 1. Client sends request (e.g., `POST /api/v1/sessions`) with `Authorization: Bearer <token>` header.
+ 2. `authMiddleware` verifies JWT and sets `req.user` (`Server/middleware/authMiddleware.js`).
+ 3. Controller (e.g., `sessionController`) handles request, calling `GeminiController` when generation/refinement is needed.
+ 4. GeminiController sends prompt to external AI and expects a JSON payload containing `{ title, jsx, css }`.
+ 5. Session is saved to MongoDB and returned to the client.
+
+ ## API Overview
+
+ - `POST /api/v1/auth/register` — register new user. Body: `{ username, email, password }`.
+ - `POST /api/v1/auth/login` — login. Body: `{ email, password }`. Returns token + user.
+ - `GET /api/v1/auth/me` — get current user. Requires auth.
+ - `POST /api/v1/sessions` — create or refine session. Body: `{ userPrompt, sessionId? }`. Requires auth.
+ - `GET /api/v1/sessions` — list sessions for current user. Requires auth.
+ - `GET /api/v1/sessions/:id` — get session by id. Requires auth.
+ - `PUT /api/v1/sessions/:id` — update session code (jsxCode, cssCode). Requires auth.
+
+ ## Database Models
+
+ - `User` (`Server/models/User.js`): `username`, `email`, `password` (hashed), `sessions` (ObjectId[]).
+ - `Session` (`Server/models/Session.js`): `title`, `chatHistory` (messages), `jsxCode`, `cssCode`, `user` (ObjectId).
+
+ ## Setup & Installation (local)
+
+ Prerequisites:
+
+ - Node.js (use a recent LTS version compatible with `package.json`)
+ - npm
+ - MongoDB (Atlas or local)
+
+ Backend
+
+ 1. Open a terminal (PowerShell) and run:
+
+ ```powershell
+ cd "c:\Users\ajeem\OneDrive\Desktop\MERN Stack\Projects\assignment\Server"
+ npm install
+ ```
+
+ 2. Create a `.env` in `Server/` (see `.env.example` at repo root). Minimal variables:
+
+ ```
+ MONGO_URI="your-mongo-connection-string"
+ JWT_SECRET="your_jwt_secret"
+ GEMINI_API_URL="your_gemini_api_url"
+ GEMINI_API_KEY="your_gemini_api_key"
+ PORT=5000
+ ```
+
+ 3. Start backend (development):
+
+ ```powershell
+ npm run dev
+ ```
+
+ Frontend
+
+ 1. Open a new terminal and run:
+
+ ```powershell
+ cd "c:\Users\ajeem\OneDrive\Desktop\MERN Stack\Projects\assignment\client"
+ npm install
+ ```
+
+ 2. Create a `.env` in `client/` (optional for dev). For production, set `VITE_API_URL`. Example:
+
+ ```
+ VITE_API_URL="http://localhost:5000"
+ ```
+
+ 3. Start frontend (Vite dev server):
+
+ ```powershell
+ npm run dev
+ ```
+
+ The client will be available at `http://localhost:5173` by default.
+
+ ## Environment variables (detected in code)
+
+ - `MONGO_URI` — MongoDB connection string used by `Server/config/db.js`.
+ - `JWT_SECRET` — secret used by `User.getSignedJwtToken()`.
+ - `JWT_EXPIRE` — optional expiration for JWT (default `'30d'` used in code fallback).
+ - `GEMINI_API_URL` — AI endpoint used in `Server/controllers/GeminiController.js`.
+ - `GEMINI_API_KEY` — API key appended to Gemini calls.
+ - `PORT` — backend port (default 5000).
+ - `VITE_API_URL` — frontend production API base URL (read by `client/src/services/api.js`).
+
+ ## Deployment
+
+ - Frontend: build with `npm run build` inside `client/` and deploy to Vercel or Netlify.
+ - Backend: can run as a standard Node server or be deployed serverless using `serverless-http` and `serverless.yml` provided in `Server/` (AWS Lambda + API Gateway).
+ - Database: MongoDB Atlas is recommended for production.
+
+ ## Live URLs (from repo attachments)
+
+ - Frontend demo URL: `https://snap-stack-pw13.vercel.app/` (as provided in project attachments).
+ - Repository: `https://github.com/mohdajeem/SnapStack`
+
+ ## Folder structure (selected)
+
+ ```
+ client/
+   src/
+     component/
+       CodePreview/
+       PromptSider/
+       Workspace/
+     context/
+     pages/
+     services/
+
+ Server/
+   controllers/
+   models/
+   routes/
+   middleware/
+   config/
+
+ architecture.mmd
+ .env.example
+ ```
+
+ ## Testing
+
+ - Manual testing steps and sample requests are included in `TESTING_GUIDE.md` in the repository. Important note: AI generation requires valid `GEMINI_API_KEY` and `GEMINI_API_URL`.
+
+ ## Known limitations
+
+ - No automated tests included in repository.
+ - No refresh token flow for JWT; token rotation is not implemented.
+ - AI generation depends on an external API and valid credentials.
+
+ ## Next steps (suggested)
+
+ - Add automated tests (Jest + supertest) for controllers and routes.
+ - Add token refresh / revoke flow.
+ - Add rate limiting and usage tracking for AI endpoints.
+
+ ---
+
+ If you want, I can also:
+
+ - create a Postman collection based on the API endpoints,
+ - add a brief CONTRIBUTING.md or PR checklist,
+ - add unit test scaffolding for the backend (Jest + supertest).
 
 
-# Run Locally
-Clone the repo and start both the frontend and backend:
+## Database Models
 
-## Environment Setup for Local Development
-To run SnapStack on your local machine, you need to create .env files in both the frontend and backend directories.
-### Frontend (.env for Vite)
-Create a .env file in your frontend root (where vite.config.js is located):
+- `User` (`Server/models/User.js`): `username`, `email`, `password` (hashed), `sessions` (ObjectId[]).
+- `Session` (`Server/models/Session.js`): `title`, `chatHistory` (messages), `jsxCode`, `cssCode`, `user` (ObjectId).
+
+## Setup & Installation (local)
+
+Prerequisites:
+
+- Node.js (use a recent LTS version compatible with `package.json`)
+- npm
+- MongoDB (Atlas or local)
+
+Backend
+
+1. Open a terminal (PowerShell) and run:
+
+```powershell
+cd "c:\Users\ajeem\OneDrive\Desktop\MERN Stack\Projects\assignment\Server"
+npm install
 ```
-# URL of the backend server
-VITE_API_URL=http://localhost:5000/api/v1
+
+2. Create a `.env` in `Server/` (see `.env.example` at repo root). Minimal variables:
 
 ```
+<<<<<<< HEAD
  This tells the frontend where to send API requests during development.
 
 
@@ -89,21 +273,16 @@ VITE_API_URL=http://localhost:5000/api/v1
 Create a .env file in your backend root (where your server.js or app.js is located):
 ```
 # Port on which the backend will run
+=======
+MONGO_URI="your-mongo-connection-string"
+JWT_SECRET="your_jwt_secret"
+GEMINI_API_URL="your_gemini_api_url"
+GEMINI_API_KEY="your_gemini_api_key"
+>>>>>>> wip/save-local-changes
 PORT=5000
-
-# MongoDB connection URI
-MONGO_URI=your_mongodb_connection_string_here
-
-# JWT secret and expiration
-JWT_SECRET=your_jwt_secret
-JWT_EXPIRE=30d
-
-# Gemini API (or any AI model you're using)
-GEMINI_API_URL=your_gemini_api_url
-GEMINI_API_KEY=your_gemini_api_key
-
 ```
 
+<<<<<<< HEAD
 ## Backend Setup
 ```
   cd server
@@ -118,9 +297,109 @@ GEMINI_API_KEY=your_gemini_api_key
   cp .env.example .env
   npm install
   npm run dev
+=======
+3. Start backend (development):
+
+```powershell
+npm run dev
 ```
 
+Frontend
 
+1. Open a new terminal and run:
+
+```powershell
+cd "c:\Users\ajeem\OneDrive\Desktop\MERN Stack\Projects\assignment\client"
+npm install
+>>>>>>> wip/save-local-changes
+```
+
+2. Create a `.env` in `client/` (optional for dev). For production, set `VITE_API_URL`. Example:
+
+```
+VITE_API_URL="http://localhost:5000"
+```
+
+3. Start frontend (Vite dev server):
+
+```powershell
+npm run dev
+```
+
+The client will be available at `http://localhost:5173` by default.
+
+## Environment variables (detected in code)
+
+- `MONGO_URI` — MongoDB connection string used by `Server/config/db.js`.
+- `JWT_SECRET` — secret used by `User.getSignedJwtToken()`.
+- `JWT_EXPIRE` — optional expiration for JWT (default `'30d'` used in code fallback).
+- `GEMINI_API_URL` — AI endpoint used in `Server/controllers/GeminiController.js`.
+- `GEMINI_API_KEY` — API key appended to Gemini calls.
+- `PORT` — backend port (default 5000).
+- `VITE_API_URL` — frontend production API base URL (read by `client/src/services/api.js`).
+
+## Deployment
+
+- Frontend: build with `npm run build` inside `client/` and deploy to Vercel or Netlify.
+- Backend: can run as a standard Node server or be deployed serverless using `serverless-http` and `serverless.yml` provided in `Server/` (AWS Lambda + API Gateway).
+- Database: MongoDB Atlas is recommended for production.
+
+## Live URLs (from repo attachments)
+
+- Frontend demo URL: `https://snap-stack-pw13.vercel.app/` (as provided in project attachments).
+- Repository: `https://github.com/mohdajeem/SnapStack`
+
+## Folder structure (selected)
+
+```
+client/
+  src/
+    component/
+      CodePreview/
+      PromptSider/
+      Workspace/
+    context/
+    pages/
+    services/
+
+Server/
+  controllers/
+  models/
+  routes/
+  middleware/
+  config/
+
+architecture.mmd
+.env.example
+```
+
+## Testing
+
+- Manual testing steps and sample requests are included in `TESTING_GUIDE.md` in the repository. Important note: AI generation requires valid `GEMINI_API_KEY` and `GEMINI_API_URL`.
+
+## Known limitations
+
+- No automated tests included in repository.
+- No refresh token flow for JWT; token rotation is not implemented.
+- AI generation depends on an external API and valid credentials.
+
+## Next steps (suggested)
+
+- Add automated tests (Jest + supertest) for controllers and routes.
+- Add token refresh / revoke flow.
+- Add rate limiting and usage tracking for AI endpoints.
+
+---
+
+If you want, I can also:
+
+- create a Postman collection based on the API endpoints,
+- add a brief CONTRIBUTING.md or PR checklist,
+- add unit test scaffolding for the backend (Jest + supertest).
+
+<<<<<<< HEAD
  License
 This project is licensed under the MIT License.
+=======
+>>>>>>> wip/save-local-changes
 

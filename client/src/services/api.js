@@ -1,7 +1,13 @@
 import axios from 'axios';
 
+const baseURL = import.meta.env.DEV
+    ? '/api/v1'
+    : `${import.meta.env.VITE_API_URL}/api/v1`;
+
 const api = axios.create({
-    baseURL: `${import.meta.env.VITE_API_URL}/api/v1`,
+    baseURL,
+    // include credentials if you later use cookies; safe to enable for dev/prod
+    withCredentials: true,
 });
 
 api.interceptors.request.use(
