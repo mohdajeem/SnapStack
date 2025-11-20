@@ -1,0 +1,73 @@
+flowchart TB
+
+  %% Frontend cluster
+  subgraph FE["Frontend - React (Vite) - Hosted on Vercel"]
+    direction TB
+    Browser["Browser / User"]
+    Frontend["React SPA (Vite)\nUI: MainLayout, Workspace, Editor"]
+    Editor["Code Editor & Preview\n(Monaco / Sandpack / Prism)"]
+    Browser -->|Open App| Frontend
+    Frontend --> Editor
+  end
+
+  %% API / Gateway
+  subgraph API["API / Serverless Entry"]
+    direction TB
+    APIGW["API Gateway / HTTP Endpoint"]
+    APIGW --> Server["Express (serverless-http)\nserver.js / app.js"]
+  end
+
+  %% Backend internals
+  subgraph BE["Backend - Express Controllers & Services"]
+    direction TB
+    Routes["Routes: /api/user, /api/session"]
+    Auth["authMiddleware (JWT verify)"]
+    Controllers["Controllers\n(userController, sessionController, GeminiController)"]
+    Services["External Services Adapter\n(GeminiController uses axios)"]
+    Models["Data Models (User, Session) - Mongoose"]
+    Routes --> Auth
+    Auth --> Controllers
+    Controllers --> Models
+    Controllers --> Services
+  end
+
+  %% External systems
+  subgraph Ext["External Systems"]
+    direction TB
+    Gemini["Gemini API (AI model)"]
+    Mongo["MongoDB Atlas"]
+  end
+
+  %% Connections and flows
+  Frontend -->|"HTTP axios POST /api/user/login"| APIGW
+  Frontend -->|"HTTP axios POST /api/session"| APIGW
+  APIGW --> Routes
+  Services -->|"Service Call"| Gemini
+  Models -->|"Persist / Read"| Mongo
+
+  %% Detailed flows: Auth and Session
+  subgraph FlowAuth["Authentication Flow"]
+    Frontend -- Credentials --> APIGW
+    APIGW --> Routes
+    Routes --> userController["userController"]
+    userController --> Models
+    userController -->|"issue JWT"| Frontend
+    Frontend -->|"Authorization: Bearer JWT"| APIGW
+  end
+
+  subgraph FlowSession["Generate / Refine Flow"]
+    Frontend -->|"POST /api/session userPrompt"| APIGW
+    APIGW --> sessionRoute["sessionRoute"]
+    sessionRoute --> authMiddleware["authMiddleware"]
+    authMiddleware --> sessionController
+    sessionController -->|"generateComponentByGemini"| GeminiController
+    GeminiController -->|"HTTP request"| Gemini
+    Gemini -->|"JSON: title, jsx, css"| GeminiController
+    sessionController -->|"save session"| Models
+    Models --> Mongo
+    sessionController -->|"return session"| Frontend
+    Frontend -->|preview| Editor
+  end
+
+  classDef infra fill:#f9f,stroke:#333,stroke-width:1px;
+  class Mongo,APIGW,Gemini infra;

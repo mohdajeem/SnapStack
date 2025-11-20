@@ -41,12 +41,12 @@ client/.env.local
 client/.DS_Store
 
 # === SERVER (Node.js / Express) ===
-server/node_modules/
-server/build/
-server/dist/
-server/.env
-server/.env.local
-server/.DS_Store
+Server/node_modules/
+Server/build/
+Server/dist/
+Server/.env
+Server/.env.local
+Server/.DS_Store
 
 # === COVERAGE & TEST OUTPUT ===
 coverage/
@@ -58,3 +58,4 @@ __tests__/
 ehthumbs.db
 Icon?
 Desktop.ini
+zpreparation

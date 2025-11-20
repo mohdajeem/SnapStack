@@ -1,16 +1,19 @@
-import express from 'express';
-import {app} from './app.js';
+import serverless from 'serverless-http';
+import dotenv from 'dotenv';
 import { connectDb } from './config/db.js';
+import { app } from './app.js';
 
-const PORT = 5000;
+dotenv.config();
+
+// Connect MongoDB
 connectDb();
 
-app.listen(PORT, () => {
-    console.log(`server is running on the port http://localhost:${PORT}`);
-})
+// Start local server or export for Lambda
+const PORT = process.env.PORT || 5000;
 
+if (process.env.NODE_ENV !== 'lambda') {
+  app.listen(PORT, () => console.log(`Server running locally on port ${PORT}`));
+}
 
-
-
-
-
+// Export handler for AWS Lambda
+export const handler = serverless(app);

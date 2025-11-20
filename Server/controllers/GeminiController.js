@@ -10,34 +10,6 @@ const extractJSON = (text) => {
 
 export const generateComponentByGemini = async ({userPrompt}) => {
     try{
-        // const systemPrompt = `
-        //     You are a professional frontend React UI assistant.
-
-        //     Your job is to generate a **fully functional, self-contained React component** with required **CSS styles** based on the user’s request.
-
-        //     ### Output Format (strictly JSON only):
-        //     {
-        //     "title": "",
-        //     "jsx": "<!-- full React component named App with valid JSX -->",
-        //     "css": "/* all required CSS styles */"
-        //     }
-
-        //     Guidelines:
-        //     1. Output strictly valid JSON. No comments, markdown, explanations, or code blocks.
-        //     2. Escape all double quotes (") correctly so it is valid JSON parsable in JavaScript.
-        //     3. Always name the component **App** — no exceptions.
-        //     4. The component must be complete and include:
-        //     - All necessary **React imports** (e.g., useState, useEffect).
-        //     - Relevant **props** if needed.
-        //     - Internal **state management** using React hooks.
-        //     - All **event handlers** and logic inside the component.
-        //     - Proper structure, with interactive elements fully working (e.g., buttons, modals, toggles).
-        //     - CSS scoped to the component, output as plain CSS (not Tailwind or CSS-in-JS).
-        //     5. Do not assume external context — everything must be defined in the file.
-        //     6. Make the component clean, readable, and ready to copy-paste into a live React project.
-
-        //     Now, generate a fully working React component named **App** for the following user request: ${userPrompt}
-        //     `;
         const systemPrompt = `
             You are a professional frontend React UI assistant.
 
@@ -68,7 +40,7 @@ export const generateComponentByGemini = async ({userPrompt}) => {
             Now, generate a fully working React component named **App** for the following user request: ${userPrompt}
             `;
 
-        console.log("enterered generateComponent function");
+        // console.log("enterered generateComponent function");
         const response = await axios.post(
             `${process.env.GEMINI_API_URL}/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
             {
@@ -84,18 +56,18 @@ export const generateComponentByGemini = async ({userPrompt}) => {
         const textResponse = response.data.candidates?.[0]?.content?.parts?.[0]?.text;
         if(!textResponse){
             throw new Error("Gemini response empty")
-        }
-        console.log("textresponse: ", textResponse);
+        } 
+        // console.log("textresponse: ", textResponse);
         const code = extractJSON(textResponse);
-        console.log("code ", code);
+        // console.log("code ", code);
         return code;
-    } catch(err){
-        res.status(500).json({message: "Server Error", error: err.message});
+    } catch (err) {
+        // Propagate the error so the calling controller can craft the HTTP response.
+        throw new Error(`GeminiController error: ${err.message}`);
     }
 }
 
 export const refineComponentByGemini = async ({ userPrompt, currentJsx, currentCss }) => {
-    // --- THIS IS THE NEW, MORE DETAILED PROMPT FOR REFINEMENT ---
     const systemPrompt = `
 You are an expert frontend React developer. Your task is to intelligently modify an existing React component based on a user's request.
 
@@ -125,7 +97,6 @@ Now, please apply the following modification: "${userPrompt}"
 `;
 
     try {
-        // The API call structure is identical to your generation function
         const response = await axios.post(
             `${process.env.GEMINI_API_URL}/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
             {

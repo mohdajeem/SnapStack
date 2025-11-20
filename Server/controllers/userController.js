@@ -55,7 +55,11 @@ export const login = async (req, res) => {
         sendTokenResponse(user, 200, res);
     } catch (error) {
         // This will now catch the clearer error from getSignedJwtToken
-        console.error("LOGIN ERROR:", error); 
+        console.error("LOGIN ERROR:", error);
+        // If the error is related to JWT secret / signing, return a clearer server-configuration error
+        if (error && error.message && /jwt|secret|sign/i.test(error.message)) {
+            return res.status(500).json({ success: false, message: "Server configuration error: JWT secret missing or invalid." });
+        }
         res.status(500).json({ success: false, message: "Server Error", error: error.message });
     }
 };

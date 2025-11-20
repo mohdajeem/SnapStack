@@ -1,0 +1,2 @@
+frontend_url = https://snap-stack-pw13.vercel.app/
+you can directly get access to the website
